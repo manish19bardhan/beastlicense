@@ -2,6 +2,8 @@ import os, hashlib, hmac, base64, json, secrets
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from flask import Flask, request, redirect, url_for, render_template, session, flash, jsonify
+from dotenv import load_dotenv
+load_dotenv()
 
 try:
     import psycopg2
@@ -269,7 +271,8 @@ def health():
         return jsonify(ok=False, database=False, error=str(ex)), 500
 
 
-# Vercel imports this module; do not start a local server there.
 if __name__ == "__main__":
-    init_db()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000))
+    )
