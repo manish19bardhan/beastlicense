@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard · KeyGen{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div>
+    <div class="kicker">Command center</div>
+    <h1>License Dashboard</h1>
+    <div class="subtitle">Monitor licenses, activations, customer access and hardware bindings.</div>
+  </div>
+  <div class="top-right">
+    <div class="online"><i></i> All systems operational</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="card stat">
+    <div class="stat-top"><span class="stat-label">Total licenses</span><span class="stat-icon">#</span></div>
+    <div class="stat-value">{{stats[0]}}</div><div class="stat-foot">Registered in database</div>
+  </div>
+  <div class="card stat">
+    <div class="stat-top"><span class="stat-label">Active</span><span class="stat-icon">✓</span></div>
+    <div class="stat-value">{{stats[1]}}</div><div class="stat-foot">Currently enabled</div>
+  </div>
+  <div class="card stat">
+    <div class="stat-top"><span class="stat-label">Revoked</span><span class="stat-icon">×</span></div>
+    <div class="stat-value">{{stats[2]}}</div><div class="stat-foot">Access disabled</div>
+  </div>
+  <div class="card stat">
+    <div class="stat-top"><span class="stat-label">Activated</span><span class="stat-icon">⌁</span></div>
+    <div class="stat-value">{{stats[3]}}</div><div class="stat-foot">Hardware bound</div>
+  </div>
+</div>
+
+<section class="card panel create-panel">
+  <div class="panel-head">
+    <div>
+      <div class="panel-title">Create a license</div>
+      <div class="panel-sub">Generate a new key using your existing license logic.</div>
+    </div>
+    <div class="panel-mark">NEW KEY</div>
+  </div>
+  <form method="post" action="/create" class="form-grid">
+    <div class="field"><label>Customer</label><input class="input" name="customer" placeholder="Enter customer name" required></div>
+    <div class="field"><label>Plan</label><select class="select" name="plan"><option>standard</option><option>premium</option><option>pro</option></select></div>
+    <div class="field"><label>Duration</label><input class="input" name="days" type="number" value="30" min="1"></div>
+    <div class="field"><label>Groups</label><input class="input" name="groups" value="unlimited"></div>
+    <button class="primary" type="submit">Generate key <span>→</span></button>
+  </form>
+</section>
+
+<section class="card panel">
+  <div class="panel-head">
+    <div>
+      <div class="panel-title">Recent licenses</div>
+      <div class="panel-sub">Latest entries from your existing database.</div>
+    </div>
+    <a href="/licenses" class="secondary">View all licenses →</a>
+  </div>
+
+  <div class="table-wrap">
+    <table class="wide-table">
+      <tr><th>Customer</th><th>License Key</th><th>Plan</th><th>Expires</th><th>Status</th><th>Hardware ID</th></tr>
+      {% for r in rows %}
+      <tr>
+        <td class="customer-cell">
+          <div class="customer-avatar">{{r.customer[:1]|upper}}</div>
+          <div><strong>{{r.customer}}</strong><small>License #{{r.id}}</small></div>
+        </td>
+        <td>
+          <div class="key-row">
+            <span class="license-key" title="{{r.license_key}}">{{r.license_key}}</span>
+            <button class="copy-btn" type="button" data-copy="{{r.license_key}}">Copy</button>
+          </div>
+        </td>
+        <td><span class="badge neutral">{{r.plan}}</span></td>
+        <td class="date-cell">{{r.expires}}</td>
+        <td>{% if r.active %}<span class="badge ok"><i></i>Active</span>{% else %}<span class="badge off"><i></i>Revoked</span>{% endif %}</td>
+        <td>
+          {% if r.hwid %}
+          <div class="hwid-row">
+            <span class="hwid-chip" title="{{r.hwid}}">{{r.hwid}}</span>
+            <button class="copy-btn" type="button" data-copy="{{r.hwid}}" title="Copy Hardware ID">Copy</button>
+          </div>
+          {% else %}
+          <span class="badge neutral">Not activated</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty">No licenses found.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach(function(btn){
+  btn.addEventListener("click", async function(){
+    try{
+      await navigator.clipboard.writeText(btn.dataset.copy);
+      const old = btn.textContent;
+      btn.textContent = "Copied";
+      btn.classList.add("copied");
+      setTimeout(() => { btn.textContent = old; btn.classList.remove("copied"); }, 1200);
+    }catch(e){}
+  });
+});
+</script>
+{% endblock %}
