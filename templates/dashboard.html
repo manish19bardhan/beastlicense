@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% block title %}Dashboard · KeyGen{% endblock %}
 {% block content %}
@@ -107,3 +108,6 @@ document.querySelectorAll("[data-copy]").forEach(function(btn){
 });
 </script>
 {% endblock %}
+=======
+{% extends 'base.html' %}{% block content %}<h1>Dashboard</h1><div class="grid">{% for x in stats %}<div class="card"><div class="stats">{{x}}</div></div>{% endfor %}</div><div class="card"><h2>Generate License</h2><form method="post" action="/create"><input name="customer" placeholder="Customer" required><select name="plan"><option>standard</option><option>premium</option><option>pro</option></select><input name="days" type="number" value="30" min="1"><input name="groups" value="unlimited"><button>Generate License</button></form></div><div class="card"><h2>Recent Licenses</h2><table><tr><th>Customer</th><th>Plan</th><th>Expires</th><th>Active</th><th>HWID</th></tr>{% for r in rows %}<tr><td>{{r.customer}}</td><td>{{r.plan}}</td><td>{{r.expires}}</td><td>{{'Yes' if r.active else 'No'}}</td><td>{{'Yes' if r.hwid else 'No'}}</td></tr>{% endfor %}</table></div>{% endblock %}
+>>>>>>> ad1926407166328fc01da8e3726ed63fa03cf43c
