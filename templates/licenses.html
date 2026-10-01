@@ -1,13 +1,14 @@
-{% extends 'base.html' %}
-{% block title %}Licenses · KeyGen{% endblock %}
+﻿{% extends 'base.html' %}
+{% block title %}Licenses Â· KeyGen{% endblock %}
 {% block content %}
-<div class="topbar">
+
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
   <div>
     <div class="kicker">License vault</div>
-    <h1>Licenses</h1>
-    <div class="subtitle">Manage customer keys, activation status and hardware bindings from one place.</div>
+    <h1 class="h2 mb-1">Licenses</h1>
+    <p class="text-secondary mb-0 small">Manage customer keys, activation status and hardware bindings from one place.</p>
   </div>
-  <div class="top-right"><a class="secondary" href="/">← Dashboard</a></div>
+  <a class="btn btn-outline-secondary btn-sm" href="/">&larr; Dashboard</a>
 </div>
 
 {% set total_count = rows|length %}
@@ -15,135 +16,141 @@
 {% set activated_count = rows|selectattr('hwid')|list|length %}
 {% set revoked_count = total_count - active_count %}
 
-<div class="mini-stats">
-  <div class="mini-stat card"><span>Total</span><strong>{{total_count}}</strong></div>
-  <div class="mini-stat card"><span>Active</span><strong>{{active_count}}</strong></div>
-  <div class="mini-stat card"><span>Revoked</span><strong>{{revoked_count}}</strong></div>
-  <div class="mini-stat card"><span>Activated</span><strong>{{activated_count}}</strong></div>
+<div class="row g-3 mb-3">
+  <div class="col-6 col-lg-3"><div class="card h-100"><div class="card-body d-flex justify-content-between align-items-center">
+    <span class="stat-label">Total</span><strong class="stat-mini">{{total_count}}</strong>
+  </div></div></div>
+  <div class="col-6 col-lg-3"><div class="card h-100"><div class="card-body d-flex justify-content-between align-items-center">
+    <span class="stat-label">Active</span><strong class="stat-mini">{{active_count}}</strong>
+  </div></div></div>
+  <div class="col-6 col-lg-3"><div class="card h-100"><div class="card-body d-flex justify-content-between align-items-center">
+    <span class="stat-label">Revoked</span><strong class="stat-mini">{{revoked_count}}</strong>
+  </div></div></div>
+  <div class="col-6 col-lg-3"><div class="card h-100"><div class="card-body d-flex justify-content-between align-items-center">
+    <span class="stat-label">Activated</span><strong class="stat-mini">{{activated_count}}</strong>
+  </div></div></div>
 </div>
 
-<section class="card panel registry-panel" style="margin-top:14px">
-  <div class="panel-head">
-    <div>
-      <div class="panel-title">License registry</div>
-      <div class="panel-sub">Find a customer, plan or license key quickly.</div>
+<section class="card mb-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-3 flex-wrap">
+      <div>
+        <h2 class="h5 mb-1">License registry</h2>
+        <p class="text-secondary small mb-0">Find a customer, plan or license key quickly.</p>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="badge text-bg-dark border">{{total_count}} result{% if total_count != 1 %}s{% endif %}</span>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-sort-toggle>Arrange: Customer A&rarr;Z</button>
+      </div>
     </div>
-    <div class="registry-tools"><span class="registry-count">{{total_count}} result{% if total_count != 1 %}s{% endif %}</span><button type="button" class="secondary compact-sort" id="sortCustomer">Arrange: Customer + #</button></div>
-  </div>
 
-  <form class="search" method="get">
-    <div class="search-input-wrap">
-      <span class="search-icon">⌕</span>
-      <input class="input" name="q" value="{{q}}" placeholder="Search licenses...">
-    </div>
-    <button class="primary" type="submit">Search</button>
-    {% if q %}<a class="secondary" href="/licenses">Clear</a>{% endif %}
-  </form>
+    <form class="row g-2" method="get">
+      <div class="col-12 col-md">
+        <input class="form-control" name="q" value="{{q}}" placeholder="Search licenses..." aria-label="Search licenses">
+      </div>
+      <div class="col-12 col-md-auto d-grid d-md-block">
+        <button class="btn btn-primary w-100" type="submit">Search</button>
+      </div>
+      {% if q %}
+      <div class="col-12 col-md-auto d-grid d-md-block">
+        <a class="btn btn-outline-secondary w-100" href="/licenses">Clear</a>
+      </div>
+      {% endif %}
+    </form>
+  </div>
 </section>
 
-<section class="card panel">
-  <div class="table-wrap">
-    <table class="wide-table license-table">
-      <tr><th><button type="button" class="th-sort" data-sort="customer" title="Group by customer">Customer <span class="sort-indicator">↕</span></button></th><th>License Key</th><th>Plan</th><th>Expires</th><th>Status</th><th>Hardware ID</th><th>Actions</th></tr>
-      {% for r in rows %}
-      <tr>
-        <td class="customer-cell" data-customer="{{r.customer|lower}}" data-license-id="{{r.id}}">
-          <button type="button" class="customer-sort" data-customer="{{r.customer|lower}}" title="Arrange licenses for {{r.customer}}">
-            <span class="customer-avatar">{{r.customer[:1]|upper}}</span>
-            <span><strong>{{r.customer}}</strong><small>License #{{r.id}}</small></span>
-          </button>
-        </td>
-        <td>
-          <div class="key-row">
-            <span class="license-key" title="{{r.license_key}}">{{r.license_key}}</span>
-            <button class="copy-btn" type="button" data-copy="{{r.license_key}}">Copy</button>
-          </div>
-        </td>
-        <td><span class="badge plan-badge {{r.plan|lower}}">{{r.plan}}</span></td>
-        <td class="date-cell">
-          <div class="expiry-cell"><strong>{{r.expires[:10]}}</strong><span>{{r.expires[11:19]}}</span></div>
-        </td>
-        <td>{% if r.active %}<span class="badge ok"><i></i>Active</span>{% else %}<span class="badge off"><i></i>Revoked</span>{% endif %}</td>
-        <td>
-          {% if r.hwid %}
-          <div class="hwid-row">
-            <span class="hwid-chip" title="{{r.hwid}}">{{r.hwid}}</span>
-            <button class="copy-btn" type="button" data-copy="{{r.hwid}}" title="Copy Hardware ID">Copy</button>
-          </div>
+<section class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle responsive-table license-table mb-0">
+        <thead>
+          <tr>
+            <th scope="col">
+              <button type="button" class="th-sort" data-sort="customer" title="Group by customer">Customer &#8597;</button>
+            </th>
+            <th scope="col">License Key</th>
+            <th scope="col">Plan</th>
+            <th scope="col">Expires</th>
+            <th scope="col">Status</th>
+            <th scope="col">Hardware ID</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td data-label="Customer" class="customer-cell" data-customer="{{r.customer|lower}}" data-license-id="{{r.id}}">
+              <button type="button" class="customer-sort" data-customer="{{r.customer|lower}}" title="Arrange licenses for {{r.customer}}">
+                <span class="customer-avatar" aria-hidden="true">{{r.customer[:1]|upper}}</span>
+                <span class="text-start">
+                  <span class="d-block fw-semibold">{{r.customer}}</span>
+                  <span class="d-block text-secondary small">License #{{r.id}}</span>
+                </span>
+              </button>
+            </td>
+            <td data-label="License Key">
+              <div class="d-flex align-items-center gap-2">
+                <span class="license-key" title="{{r.license_key}}">{{r.license_key}}</span>
+                <button class="btn btn-outline-secondary copy-btn" type="button" data-copy="{{r.license_key}}">Copy</button>
+              </div>
+            </td>
+            <td data-label="Plan">
+              <span class="badge plan-badge {{r.plan|lower}}">{{r.plan}}</span>
+            </td>
+            <td data-label="Expires">
+              {% set _d = r.expires[:10].split('-') %}
+              {% set _m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] %}
+              <div class="expiry-cell">
+                <span class="expiry-date">{{ _d[2]|int }} {{ _m[_d[1]|int - 1] }} {{ _d[0] }}</span>
+                <span class="expiry-time">{{ r.expires[11:19] }}</span>
+              </div>
+            </td>
+            <td data-label="Status">
+              {% if r.active %}
+                <span class="badge rounded-pill text-success-emphasis bg-success-subtle border border-success-subtle"><span class="dot" aria-hidden="true"></span> Active</span>
+              {% else %}
+                <span class="badge rounded-pill text-danger-emphasis bg-danger-subtle border border-danger-subtle"><span class="dot" aria-hidden="true"></span> Revoked</span>
+              {% endif %}
+            </td>
+            <td data-label="Hardware ID">
+              {% if r.hwid %}
+                <div class="d-flex align-items-center gap-2">
+                  <span class="hwid-chip" title="{{r.hwid}}">{{r.hwid}}</span>
+                  <button class="btn btn-outline-secondary copy-btn" type="button" data-copy="{{r.hwid}}" title="Copy Hardware ID">Copy</button>
+                </div>
+              {% else %}
+                <span class="badge text-bg-secondary">Not activated</span>
+              {% endif %}
+            </td>
+            <td data-label="Actions">
+              <div class="d-flex gap-2 flex-wrap">
+                <form method="post" action="/action/{{'revoke' if r.active else 'restore'}}" class="m-0">
+                  <input type="hidden" name="license_key" value="{{r.license_key}}">
+                  <button class="btn btn-sm {{ 'btn-outline-danger' if r.active else 'btn-outline-secondary' }}" type="submit">
+                    {{'Revoke' if r.active else 'Restore'}}
+                  </button>
+                </form>
+                <form method="post" action="/action/reset" class="m-0">
+                  <input type="hidden" name="license_key" value="{{r.license_key}}">
+                  <button class="btn btn-sm btn-outline-secondary" type="submit">Reset HWID</button>
+                </form>
+              </div>
+            </td>
+          </tr>
           {% else %}
-          <span class="badge neutral">Not activated</span>
-          {% endif %}
-        </td>
-        <td>
-          <div class="actions">
-            <form method="post" action="/action/{{'revoke' if r.active else 'restore'}}">
-              <input type="hidden" name="license_key" value="{{r.license_key}}">
-              <button class="mini {% if r.active %}danger{% endif %}" type="submit">{{'Revoke' if r.active else 'Restore'}}</button>
-            </form>
-            <form method="post" action="/action/reset">
-              <input type="hidden" name="license_key" value="{{r.license_key}}">
-              <button class="mini" type="submit">Reset HWID</button>
-            </form>
-          </div>
-        </td>
-      </tr>
-      {% else %}
-      <tr><td colspan="7" class="empty">No licenses found.</td></tr>
-      {% endfor %}
-    </table>
+          <tr class="empty-row">
+            <td colspan="7" class="text-center py-5">
+              <div class="empty-icon" aria-hidden="true">&#9636;</div>
+              <div class="h6 mt-2 mb-1">No licenses found</div>
+              <div class="text-secondary small">Create your first key from the dashboard.</div>
+              <a href="/" class="btn btn-primary btn-sm mt-3">Go to dashboard</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
-
-<script>
-document.querySelectorAll("[data-copy]").forEach(function(btn){
-  btn.addEventListener("click", async function(){
-    try{
-      await navigator.clipboard.writeText(btn.dataset.copy);
-      const old = btn.textContent;
-      btn.textContent = "Copied";
-      btn.classList.add("copied");
-      setTimeout(() => { btn.textContent = old; btn.classList.remove("copied"); }, 1200);
-    }catch(e){}
-  });
-});
-
-// UI-only arrangement: customer groups are alphabetical, then License # asc.
-(function(){
-  const table = document.querySelector(".license-table");
-  if(!table) return;
-  const bodyRows = Array.from(table.querySelectorAll("tr")).slice(1);
-  const sortBtn = document.getElementById("sortCustomer");
-  const customerButtons = document.querySelectorAll(".customer-sort");
-
-  function arrange(customerOnly){
-    const rows = Array.from(table.querySelectorAll("tr")).slice(1);
-    rows.sort((a,b)=>{
-      const ac=(a.querySelector(".customer-cell")?.dataset.customer||"");
-      const bc=(b.querySelector(".customer-cell")?.dataset.customer||"");
-      const ai=parseInt(a.querySelector(".customer-cell")?.dataset.licenseId||"0",10);
-      const bi=parseInt(b.querySelector(".customer-cell")?.dataset.licenseId||"0",10);
-      return ac.localeCompare(bc) || ai-bi;
-    });
-    rows.forEach(r=>table.appendChild(r));
-    if(sortBtn){ sortBtn.textContent = customerOnly ? "Arrange: Customer + # ✓" : "Arrange: Customer + #"; }
-  }
-
-  sortBtn?.addEventListener("click", ()=>arrange(true));
-  customerButtons.forEach(btn=>btn.addEventListener("click", ()=>{
-    const target=btn.dataset.customer;
-    const rows=Array.from(table.querySelectorAll("tr")).slice(1);
-    rows.sort((a,b)=>{
-      const ac=a.querySelector(".customer-cell")?.dataset.customer||"";
-      const bc=b.querySelector(".customer-cell")?.dataset.customer||"";
-      const ai=parseInt(a.querySelector(".customer-cell")?.dataset.licenseId||"0",10);
-      const bi=parseInt(b.querySelector(".customer-cell")?.dataset.licenseId||"0",10);
-      const ar=ac===target?0:1, br=bc===target?0:1;
-      return ar-br || ac.localeCompare(bc) || ai-bi;
-    });
-    rows.forEach(r=>table.appendChild(r));
-    document.querySelectorAll(".customer-sort").forEach(x=>x.classList.remove("selected"));
-    btn.classList.add("selected");
-  }));
-})();
-</script>
 {% endblock %}

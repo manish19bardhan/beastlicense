@@ -1,4 +1,4 @@
-import os, hashlib, hmac, base64, json, secrets
+import os, hashlib, hmac, base64, json, secrets, math
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from flask import Flask, request, redirect, url_for, render_template, session, flash, jsonify
@@ -242,7 +242,8 @@ def check():
             c.commit()
 
             expires = datetime.fromisoformat(r["expires"])
-            remaining = max(0, (expires - now()).days)
+            remaining = max(0, int(math.ceil((expires - now()).total_seconds() / 86400)))
+
             return jsonify(
                 valid=True,
                 reason=f"valid ({remaining} days remaining)",
@@ -251,6 +252,7 @@ def check():
                     "plan": r["plan"],
                     "expires": r["expires"],
                     "max_groups": r["max_groups"],
+                    "days_left": remaining,
                 },
                 expires=r["expires"],
             )

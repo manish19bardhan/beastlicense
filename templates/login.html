@@ -1,138 +1,183 @@
-<!doctype html>
-<html lang="en">
+﻿<!doctype html>
+<html lang="en" data-bs-theme="dark">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sign in · KeyGen</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05060a">
+<title>Sign in Â· KeyGen</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%238b7cff'/><text x='16' y='22' font-size='18' font-weight='700' fill='white' text-anchor='middle' font-family='sans-serif'>K</text></svg>">
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
 </head>
 <body>
-<div class="login-page">
- <div class="login-card">
-  <div class="login-admin-icon" aria-hidden="true">
-   <svg viewBox="0 0 24 24">
-    <path d="M12 3.5 19 6v5.2c0 4.2-2.7 7.8-7 9.3-4.3-1.5-7-5.1-7-9.3V6l7-2.5Z"/>
-    <circle cx="12" cy="10" r="2.1"/>
-    <path d="M8.7 16c.8-1.8 2-2.7 3.3-2.7s2.5.9 3.3 2.7"/>
-   </svg>
-  </div>
 
-  <div class="login-brand">
-   <div>
-    <div class="brand-name">KeyGen</div>
-    <div class="brand-sub">LICENSE CONTROL</div>
-   </div>
-  </div>
+<style>
+html,body{background:#05060a;margin:0;padding:0;height:100%}
+body *{box-sizing:border-box}
 
-  <div class="login-kicker">Private workspace</div>
-  <div class="login-title">Welcome back</div>
-  <p class="login-desc">Sign in to continue to your license command center.</p>
+.lg-shell{position:relative;min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:32px 20px;overflow:hidden;font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;color:#f4f5f7;isolation:isolate}
+.lg-shell::before{content:"";position:absolute;inset:-20%;z-index:-2;background:radial-gradient(600px 500px at 50% -10%, rgba(139,124,255,.30), transparent 70%),radial-gradient(500px 460px at 8% 100%, rgba(88,224,255,.14), transparent 70%),radial-gradient(520px 480px at 100% 90%, rgba(101,167,255,.12), transparent 70%);filter:blur(20px);pointer-events:none;animation:lg-drift 30s ease-in-out infinite alternate}
+@keyframes lg-drift{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-2%,1%,0) scale(1.06)}}
+.lg-shell::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse 65% 55% at 50% 45%, #000 40%, transparent 100%);mask-image:radial-gradient(ellipse 65% 55% at 50% 45%, #000 40%, transparent 100%)}
 
-  <form class="login-form" method="post" id="loginForm">
-   <div class="login-field">
-    <label for="username">Username</label>
-    <input id="username" class="input" name="username"
-           placeholder="Enter your username"
-           autocomplete="username" required>
-   </div>
+.lg-card{position:relative;width:100%;max-width:440px;padding:40px 36px 32px;border-radius:22px;background:linear-gradient(180deg, #14172a 0%, #0e1120 100%);border:1px solid rgba(255,255,255,.10);box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 30px 80px -30px rgba(0,0,0,.9),0 0 90px -30px rgba(139,124,255,.55);animation:lg-in .45s cubic-bezier(.16,1,.3,1) both}
+@keyframes lg-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.lg-card::before{content:"";position:absolute;left:20%;right:20%;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(139,124,255,.9),transparent)}
+.lg-card::after{content:"";position:absolute;inset:-2px;z-index:-1;border-radius:24px;background:linear-gradient(180deg, rgba(139,124,255,.35), rgba(139,124,255,0));filter:blur(24px);opacity:.4;pointer-events:none}
 
-   <div class="login-field">
-    <label for="password">Password</label>
-    <div class="password-wrap">
-     <input id="password" class="input" name="password" type="password"
-            placeholder="Enter your password"
-            autocomplete="current-password" required>
-     <button class="show-password" type="button" id="togglePassword"
-             aria-label="Show password" title="Show password">
-       <svg class="eye eye-open" viewBox="0 0 24 24" aria-hidden="true">
-         <path d="M2.2 12s3.4-6 9.8-6 9.8 6 9.8 6-3.4 6-9.8 6S2.2 12 2.2 12Z"/>
-         <circle cx="12" cy="12" r="2.7"/>
-       </svg>
-       <svg class="eye eye-closed" viewBox="0 0 24 24" aria-hidden="true">
-         <path d="M3 3l18 18"/>
-         <path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6.4 0 9.8 6 9.8 6a18 18 0 0 1-3.2 3.7"/>
-         <path d="M6.3 7.5C3.8 9.3 2.2 12 2.2 12s3.4 6 9.8 6c1.6 0 3-.4 4.2-1"/>
-       </svg>
-     </button>
+.lg-icon{position:relative;width:56px;height:56px;margin:0 auto 16px;border-radius:16px;display:grid;place-items:center;color:#d8d2ff;background:linear-gradient(145deg, rgba(139,124,255,.28), rgba(139,124,255,.08));border:1px solid rgba(139,124,255,.45);box-shadow:0 12px 30px -12px rgba(139,124,255,.9),0 1px 0 rgba(255,255,255,.14) inset}
+.lg-icon svg{width:26px;height:26px}
+
+.lg-brand{text-align:center;margin-bottom:26px}
+.lg-brand-name{font-family:'Space Grotesk',system-ui,sans-serif;font-size:19px;font-weight:700;letter-spacing:-.02em;color:#fff;line-height:1.1}
+.lg-brand-sub{font-size:9.5px;letter-spacing:.30em;font-weight:700;color:#7c8394;margin-top:5px}
+
+.lg-kicker{display:flex;align-items:center;justify-content:center;gap:10px;font-size:10px;letter-spacing:.28em;font-weight:700;color:#a99fff;margin-bottom:10px}
+.lg-kicker span{white-space:nowrap}
+.lg-title{font-family:'Space Grotesk',system-ui,sans-serif;font-size:32px;font-weight:700;letter-spacing:-.035em;line-height:1.1;color:#fff;text-align:center;margin:0 0 10px}
+.lg-desc{text-align:center;font-size:13px;line-height:1.55;color:#8a8fa6;margin:0 auto 28px;max-width:300px}
+
+.lg-form{display:grid;gap:18px}
+.lg-field{display:grid;gap:8px}
+.lg-label{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8b8fa3}
+.lg-input{width:100%;height:46px;padding:0 14px;font-family:inherit;font-size:13.5px;color:#f4f5f7;background:#090b12;border:1px solid rgba(255,255,255,.10);border-radius:11px;outline:none;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
+.lg-input::placeholder{color:#5a6076}
+.lg-input:hover{border-color:rgba(255,255,255,.18)}
+.lg-input:focus{border-color:#8b7cff;background:#0a0d15;box-shadow:0 0 0 4px rgba(139,124,255,.16),0 0 30px -12px rgba(139,124,255,.75)}
+.lg-pass-wrap{position:relative;display:block}
+.lg-pass-wrap .lg-input{padding-right:46px}
+.lg-eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;padding:0;border:0;border-radius:8px;background:transparent;color:#7c8394;cursor:pointer;display:grid;place-items:center;transition:background .15s ease,color .15s ease}
+.lg-eye:hover{background:rgba(139,124,255,.12);color:#fff}
+.lg-eye svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lg-eye .lg-eye-off{display:none}
+.lg-eye.on .lg-eye-on{display:none}
+.lg-eye.on .lg-eye-off{display:block}
+
+.lg-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:2px}
+.lg-check{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;color:#b8bccb;cursor:pointer;user-select:none}
+.lg-check input{appearance:none;-webkit-appearance:none;width:15px;height:15px;margin:0;border-radius:5px;background:#0a0c13;border:1px solid rgba(255,255,255,.18);cursor:pointer;position:relative;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease}
+.lg-check input:checked{background:#8b7cff;border-color:#8b7cff;box-shadow:0 0 14px -2px rgba(139,124,255,.8)}
+.lg-check input:checked::after{content:"";position:absolute;inset:0;background:no-repeat center/10px 10px url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>")}
+.lg-hint{font-size:10.5px;color:#6b7186}
+
+.lg-submit{position:relative;overflow:hidden;width:100%;height:48px;margin-top:4px;border:1px solid rgba(168,151,255,.5);border-radius:11px;font-family:inherit;font-size:13.5px;font-weight:700;letter-spacing:.005em;color:#fff;cursor:pointer;background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 55%) padding-box,linear-gradient(135deg, #8b7cff, #5e8fff) border-box;background-color:#7b6bff;box-shadow:0 14px 34px -12px rgba(139,124,255,.85),0 1px 0 rgba(255,255,255,.20) inset,0 -10px 24px rgba(88,224,255,.18) inset;transition:transform .15s ease,box-shadow .2s ease,filter .15s ease}
+.lg-submit:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 20px 44px -14px rgba(139,124,255,1),0 1px 0 rgba(255,255,255,.28) inset,0 -10px 28px rgba(88,224,255,.24) inset}
+.lg-submit:active{transform:translateY(0)}
+.lg-submit::after{content:"";position:absolute;top:0;left:-140%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);transform:skewX(-22deg);transition:left .6s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+.lg-submit:hover::after{left:140%}
+
+.lg-foot{margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);text-align:center;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:#6b7186}
+
+@media(max-width:520px){
+  .lg-card{padding:32px 22px 26px;border-radius:20px}
+  .lg-title{font-size:27px}
+  .lg-icon{width:52px;height:52px}
+  .lg-shell{padding:20px 14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .lg-shell::before{animation:none}
+  .lg-card{animation:none}
+  .lg-submit:hover::after{left:-140%}
+}
+</style>
+
+<div class="lg-shell">
+  <div class="lg-card">
+
+    <div class="lg-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3.5 19 6v5.2c0 4.2-2.7 7.8-7 9.3-4.3-1.5-7-5.1-7-9.3V6l7-2.5Z"/>
+        <circle cx="12" cy="10" r="2.1"/>
+        <path d="M8.7 16c.8-1.8 2-2.7 3.3-2.7s2.5.9 3.3 2.7"/>
+      </svg>
     </div>
-   </div>
 
-   <div class="login-options">
-    <label class="remember">
-     <input type="checkbox" name="remember" id="remember">
-     <span>Remember me</span>
-    </label>
-    <span class="secure">Browser password save</span>
-   </div>
+    <div class="lg-brand">
+      <div class="lg-brand-name">KeyGen</div>
+      <div class="lg-brand-sub">LICENSE CONTROL</div>
+    </div>
 
-   <button class="primary login-submit" type="submit">Enter workspace</button>
-  </form>
+    <div class="lg-kicker"><span>PRIVATE WORKSPACE</span></div>
+    <h1 class="lg-title">Welcome back</h1>
+    <p class="lg-desc">Sign in to continue to your license command center.</p>
 
-  <div class="login-foot">Administrator console</div>
- </div>
+    <form class="lg-form" method="post" id="loginForm" autocomplete="on">
+      <div class="lg-field">
+        <label class="lg-label" for="username">Username</label>
+        <input class="lg-input" id="username" name="username" placeholder="Enter your username" autocomplete="username" required>
+      </div>
+
+      <div class="lg-field">
+        <label class="lg-label" for="password">Password</label>
+        <span class="lg-pass-wrap">
+          <input class="lg-input" id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+          <button class="lg-eye" type="button" id="togglePassword" aria-label="Show password" title="Show password">
+            <svg class="lg-eye-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.2 12s3.4-6 9.8-6 9.8 6 9.8 6-3.4 6-9.8 6S2.2 12 2.2 12Z"/><circle cx="12" cy="12" r="2.7"/></svg>
+            <svg class="lg-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6.4 0 9.8 6 9.8 6a18 18 0 0 1-3.2 3.7"/><path d="M6.3 7.5C3.8 9.3 2.2 12 2.2 12s3.4 6 9.8 6c1.6 0 3-.4 4.2-1"/></svg>
+          </button>
+        </span>
+      </div>
+
+      <div class="lg-row">
+        <label class="lg-check">
+          <input type="checkbox" name="remember" id="remember">
+          <span>Remember me</span>
+        </label>
+        <span class="lg-hint">Browser password save</span>
+      </div>
+
+      <button class="lg-submit" type="submit" id="submitBtn">Enter workspace</button>
+    </form>
+
+    <div class="lg-foot">Administrator console</div>
+  </div>
 </div>
 
 <script>
-(function () {
-  const form = document.getElementById("loginForm");
-  const username = document.getElementById("username");
-  const password = document.getElementById("password");
-  const remember = document.getElementById("remember");
-  const toggle = document.getElementById("togglePassword");
+(function(){
+  'use strict';
+  var form = document.getElementById('loginForm');
+  var username = document.getElementById('username');
+  var password = document.getElementById('password');
+  var remember = document.getElementById('remember');
+  var toggle = document.getElementById('togglePassword');
+  var submit = document.getElementById('submitBtn');
 
-  // Password visibility.
-  if (password && toggle) {
-    function setEye(isVisible) {
-      toggle.classList.toggle("is-visible", isVisible);
-      toggle.setAttribute("aria-label", isVisible ? "Hide password" : "Show password");
-      toggle.title = isVisible ? "Hide password" : "Show password";
-    }
-
-    password.addEventListener("focus", () => toggle.classList.add("show"));
-    password.addEventListener("input", () => toggle.classList.add("show"));
-    password.addEventListener("blur", () => {
-      if (!password.value) toggle.classList.remove("show");
-    });
-    toggle.addEventListener("mousedown", e => e.preventDefault());
-    toggle.addEventListener("click", function () {
-      const visible = password.type === "text";
-      password.type = visible ? "password" : "text";
-      setEye(!visible);
+  if(toggle && password){
+    toggle.addEventListener('click', function(){
+      var visible = password.type === 'text';
+      password.type = visible ? 'password' : 'text';
+      toggle.classList.toggle('on', !visible);
+      toggle.setAttribute('aria-label', !visible ? 'Hide password' : 'Show password');
+      toggle.title = !visible ? 'Hide password' : 'Show password';
     });
   }
 
-  // Let the browser's password manager offer "Save password?".
-  // No password is written to localStorage or sent anywhere extra.
-  if (form) {
-    form.addEventListener("submit", function () {
-      if (!remember || !remember.checked || !username.value || !password.value) return;
-
-      if ("PasswordCredential" in window && navigator.credentials && navigator.credentials.store) {
-        try {
-          const credential = new PasswordCredential({
-            id: username.value,
-            password: password.value,
-            name: username.value
-          });
-          navigator.credentials.store(credential).catch(() => {});
-        } catch (_) {}
+  if(form){
+    form.addEventListener('submit', function(){
+      if(submit && !submit.disabled){
+        submit.disabled = true;
+        submit.textContent = 'Signing in....';
+      }
+      if(remember && remember.checked && username.value && password.value){
+        if('PasswordCredential' in window && navigator.credentials && navigator.credentials.store){
+          try{
+            var c = new PasswordCredential({ id: username.value, password: password.value, name: username.value });
+            navigator.credentials.store(c).catch(function(){});
+          }catch(_){}
+        }
       }
     });
   }
 
-  // Ask the browser for a previously saved credential and autofill it.
-  // Chrome/Edge may still require the user to approve the browser's password UI.
-  if (navigator.credentials && navigator.credentials.get) {
-    navigator.credentials.get({
-      password: true,
-      mediation: "optional"
-    }).then(function (credential) {
-      if (!credential) return;
-      if (credential.id && !username.value) username.value = credential.id;
-      if (credential.password && !password.value) {
-        password.value = credential.password;
-        if (toggle) toggle.classList.add("show");
-      }
-    }).catch(() => {});
+  if(navigator.credentials && navigator.credentials.get){
+    navigator.credentials.get({ password: true, mediation: 'optional' })
+      .then(function(c){
+        if(!c) return;
+        if(c.id && username && !username.value) username.value = c.id;
+        if(c.password && password && !password.value) password.value = c.password;
+      })
+      .catch(function(){});
   }
 })();
 </script>
